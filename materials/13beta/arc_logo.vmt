@@ -1,0 +1,5 @@
+VertexLitGeneric
+{
+	$basetexture 13beta/arc_logo
+	$translucent 1
+}
