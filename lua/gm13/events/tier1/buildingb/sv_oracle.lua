@@ -175,6 +175,9 @@ end
 
 local function CreateEvent()
     local oracleWall = ents.FindByName("oracleWall")[1]
+
+    if not oracleWall then return end
+
     oracleWall:SetColor(Color(255, 255, 255, 0))
     oracleWall:Fire("Toggle")
 

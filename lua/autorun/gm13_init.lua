@@ -81,11 +81,11 @@ if SERVER then
 	GM13.Lobby.selectedServerDB = ISGM13 and "1" or ISCOMMONMAP and "2" or "3"
 	GM13.Lobby.version = "3"
 	GM13.Lobby.isEnabled = false
-	GM13.Lobby.selectedServerLink = nil
+	GM13.Lobby.selectedServerLink = ""
 	GM13.Lobby.lobbyChecksLimit = ISGM13 and 10 or 45
 	GM13.Lobby.lobbyChecks = 0
 	GM13.Lobby.isNewEntry = true
-	GM13.Lobby.gameID = math.random(1, 999999) -- Used to identify multiple GMod instances
+	GM13.Lobby.gameID = math.random(1, 999) -- Used to identify multiple GMod instances
 	GM13.Lobby.printResponses = false -- Flood the console with information returned from the server
 end 
 

@@ -141,7 +141,7 @@ function GM13.Ent:Resize(ent, scale)
 
 	local physObj = ent:GetPhysicsObject()
 
-	if not type(physObj) == "PhysObj" then return end
+	if not type(physObj) == "PhysObj" or not physObj:IsValid() then return end
 
 	local physMesh = physObj:GetMeshConvexes()
 
@@ -179,16 +179,18 @@ function GM13.Ent:Resize(ent, scale)
 
     physObj = ent:GetPhysicsObject()
 
-    physObj:EnableGravity(PhysicsData[1])
-    physObj:SetMaterial(PhysicsData[2])
-    physObj:EnableCollisions(PhysicsData[3])
-    physObj:EnableDrag(PhysicsData[4])
-    physObj:SetVelocity(PhysicsData[5])
-    physObj:AddAngleVelocity(PhysicsData[6] - physObj:GetAngleVelocity())
-    physObj:EnableMotion(PhysicsData[7])
+    if phys:IsValid() then
+        physObj:EnableGravity(PhysicsData[1])
+        physObj:SetMaterial(PhysicsData[2])
+        physObj:EnableCollisions(PhysicsData[3])
+        physObj:EnableDrag(PhysicsData[4])
+        physObj:SetVelocity(PhysicsData[5])
+        physObj:AddAngleVelocity(PhysicsData[6] - physObj:GetAngleVelocity())
+        physObj:EnableMotion(PhysicsData[7])
 
-    physObj:SetMass(math.Clamp(mass * scale * scale * scale, 0.1, 50000))
-    physObj:SetDamping(0, 0)
+        physObj:SetMass(math.Clamp(mass * scale * scale * scale, 0.1, 50000))
+        physObj:SetDamping(0, 0)
+    end
 
     minS, maxS = ent:GetCollisionBounds()
     boundVec = maxS - minS

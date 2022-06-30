@@ -44,7 +44,8 @@ hook.Add("OnSpawnMenuOpen", "gm13_deal_with_tools_category", function()
         HandleToolCategories()
     else
         timer.Create("gm13_handle_tools_category", 0.2, 60, function()
-            local categoriesPanel = istable(g_SpawnMenu:GetChildren()) and
+            local categoriesPanel = g_SpawnMenu and
+                                    istable(g_SpawnMenu:GetChildren()) and
                                            #g_SpawnMenu:GetChildren() >= 2 and
                                     istable(g_SpawnMenu:GetChildren()[2]:GetChildren()) and
                                            #g_SpawnMenu:GetChildren()[2]:GetChildren() >= 2 and

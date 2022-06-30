@@ -238,7 +238,9 @@ local function ThrowUp(ent, eventName)
 
     for i = 0, ragdoll:GetPhysicsObjectCount() - 1 do
 		local phys = ragdoll:GetPhysicsObjectNum(i)
-		phys:ApplyForceCenter(Vector(0, 0, 10000))
+        if phys:IsValid() then
+    		phys:ApplyForceCenter(Vector(0, 0, 10000))
+        end
 	end
 
     GM13.Ent:FadeOut(ragdoll, 10, function()

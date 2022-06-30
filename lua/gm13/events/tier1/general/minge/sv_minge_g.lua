@@ -72,15 +72,19 @@ local function PunishPlayer(ply)
     local velocity = ply:GetVelocity()
     for i = 1, ragdoll:GetPhysicsObjectCount() - 1 do
         local phys = ragdoll:GetPhysicsObjectNum(i)
-        phys:SetVelocity(velocity)
+        if phys:IsValid() then
+            phys:SetVelocity(velocity)
+        end
     end
 
     timer.Create(tostring(ply), 0.2, 5 * 7, function()
         if ragdoll:IsValid() then
             for i = 1, ragdoll:GetPhysicsObjectCount() - 1 do
                 local phys = ragdoll:GetPhysicsObjectNum(i)
-                local randomVelocity = Vector(math.random(-1, 1), math.random(-1, 1), math.random(-1, 1)) * math.random(50, 300)
-                phys:SetVelocity(randomVelocity)
+                if phys:IsValid() then
+                    local randomVelocity = Vector(math.random(-1, 1), math.random(-1, 1), math.random(-1, 1)) * math.random(50, 300)
+                    phys:SetVelocity(randomVelocity)
+                end
             end
         end
     end)
@@ -195,8 +199,6 @@ local function FinishMinge(entIndex, status)
                 net.WriteVector(explosionPos)
                 net.Broadcast()
             end)
-
-            mingeList[entIndex] = nil
         end
     elseif status == "disconnected" then
         timer.Simple(0.5, function()
@@ -205,6 +207,8 @@ local function FinishMinge(entIndex, status)
             end
         end)
     end
+
+    mingeList[entIndex] = nil
 
     if minge and minge:IsValid() then
         timer.Simple(0.51, function()
@@ -261,7 +265,7 @@ local function CreateEvent()
         for entIndex, invaderData in pairs(data['invaders']) do
             if mingeList[entIndex] and invaderData["status"] ~= "ongoing" then
                 FinishMinge(entIndex, invaderData["status"])
-            elseif invaderData["status"] == "ongoing" and checkData.pos then
+            elseif invaderData['pos'] and invaderData["status"] == "ongoing" then
                 if not mingeList[entIndex] or not mingeList[entIndex]:IsValid() then
                     local ent = ents.Create("gm13_mingebag")
                     ent:SetTiming(delay, max_seconds)
@@ -277,7 +281,7 @@ local function CreateEvent()
                     net.Start("gm13_print_cough")
                     net.Broadcast()
                 end
-
+                
                 for k, ent in ipairs(ents.FindInSphere(invaderData['pos'], 250)) do
                     if ent:IsPlayer() and ent:GetNWInt("gm13_lobby") == 1 then
                         SlapPlayer(ent)

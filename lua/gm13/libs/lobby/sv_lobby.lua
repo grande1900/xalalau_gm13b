@@ -161,12 +161,14 @@ function GM13.Lobby:GetInfo()
                     GM13.Lobby.isNewEntry = false
                 end
             else
-                if not lobbyInfo["is_updated"] then
-                    PrintMessage(HUD_PRINTTALK, "Attention! The mingebags addon has been updated and you need to restart the game to download the files. The addon will not work until you do this.")
-                end
+                if lobbyInfo then
+                    if not lobbyInfo["is_updated"] then
+                        PrintMessage(HUD_PRINTTALK, "Attention! The mingebags addon has been updated and you need to restart the game to download the files. The addon will not work until you do this.")
+                    end
 
-                if lobbyInfo["force_disconnect"] then
-                    print("The mingebags are temporarily rejecting you.")
+                    if lobbyInfo["force_disconnect"] then
+                        print("The mingebags are temporarily rejecting you.")
+                    end
                 end
 
                 PrintStatus("Error.")
@@ -535,7 +537,7 @@ function GM13.Lobby:Join(tick_s, playing_time_s, delayTolerance, localMode)
 
                         -- Inform the server about the start of the lobby
                         -- This runs as soon as there is invader information available
-                        if not alertedPlayers and table.Count(data['invaders']) > 0 then
+                        if not alertedPlayers and data['invaders'] and table.Count(data['invaders']) > 0 then
                             hook.Run("gm13_lobby_event_started", data)
                             alertedPlayers = true
                         end
@@ -588,18 +590,20 @@ function GM13.Lobby:ForceDisconnect()
         entryData[key] = value
     end
 
-    http.Post(GM13.Lobby.selectedServerLink .. "play.php?db=" .. GM13.Lobby.selectedServerDB,
-        entryData,
-        function(body, length, headers, code)
-            PrintStatus("Forced to stop.")
+    if GM13.Lobby.selectedServerLink ~= "" then
+        http.Post(GM13.Lobby.selectedServerLink .. "play.php?db=" .. GM13.Lobby.selectedServerDB,
+            entryData,
+            function(body, length, headers, code)
+                PrintStatus("Forced to stop.")
 
-            if GM13.Lobby.printResponses then
-                print(body)
+                if GM13.Lobby.printResponses then
+                    print(body)
+                end
+
+                return
             end
-
-            return
-        end
-    )
+        )
+    end
 
     hook.Run("gm13_lobby_result", "stopped")
     GM13.Lobby:Exit()
